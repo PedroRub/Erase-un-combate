@@ -8,11 +8,32 @@ IA::IA(Personaje& yoRef, Personaje& enemigoRef)
 yo(&yoRef), enemigo(&enemigoRef), distanciaRespectoJugador(0.0f)
 {
     actualizarDistancia();
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+}
+
+void IA::setTiempoBotonMantenido(float t)
+{
+    tiempoBotonMantenido = t;
 }
 
 float IA::getDistanciaRespectoJugador()
 {
     return distanciaRespectoJugador;
+}
+
+float IA::getRangoAtaque()
+{
+    return RANGO_ATAQUE;
+}
+
+float IA::getRangoMedio()
+{
+    return RANGO_MEDIO;
+}
+
+float IA::getTiempoBotonMantenido()
+{
+    return tiempoBotonMantenido;
 }
 
 void IA::actualizarDistancia()
@@ -43,33 +64,66 @@ void IA::bucleIA()
     {
         return;
     }
+
+    //Va contando cuanto le queda al boton para terminar;
+    if(getTiempoBotonMantenido()>0)
+    {
+        float framesRestantes = getTiempoBotonMantenido();
+        setTiempoBotonMantenido(framesRestantes--);
+        return;
+    }
+
     //Lo suelta.
     soltarTodo();
     //Actualiza la distancia
     actualizarDistancia();
     float distancia = getDistanciaRespectoJugador();
     //std::cerr << "La distancia es: " << distancia << "\n";
-    //Esto es el rango en el que puede atacar... Le pega al bicho que tengo que matar
-    const float RANGO_ATAQUE = 50.0f;
 
+    bool isMirandoDerecha = yo->isMirandoDerecha();
+
+    //Numero random que nos sirve para tomar decisiones
+    int r = std::rand() % 100;
     /*Solo comprueba si esta cerca para atacar, si no esta cerca se acerca.
     Como la distancia puede ser positiva o negativa, usamos esto para saber si el personaje tiene que ir a la derecha o la izquierda
-    Si es positiva eso quiere decir que el jugador esta a la derecha, entonces nos movemos a la derecha
-    Si es negativa pues a la izquierda
     El caso de atacar solo tenemos que calcular el valor absoluto de la distancia y si esa distancia es menor que la variable RANGO_ATAQUE 
     la IA ataca
+    Si mira a la derecha y la distancia está por debajo de RANGO_MEDIO entonces se moverá.
     */
-    if (std::abs(distancia) <= RANGO_ATAQUE)
+    if (std::abs(distancia) <= getRangoAtaque())
     {
-        yo->realizarAccion(Accion::ATACAR);
+        /*if(enemigo-> == Accion.ARRIBA)
+        {
+            Todo esto es por si el enemigo salta pues la IA salta y le suelta una leche
+        }*/
+        yo->realizarAccion(Accion::ATACAR); //Si estamos en el suelo le pega
     }
-    else if (distancia > 0)
+    else if (isMirandoDerecha && std::abs(distancia) <= getRangoMedio())
     {
-        yo->realizarAccion(Accion::DERECHA);
+        if(r<70)
+        {
+            yo->realizarAccion(Accion::DERECHA); //Se mueve a la derecha
+            int tm = 3.0f * (std::rand() % 2) * 1.0f;
+            setTiempoBotonMantenido(tm);
+        }
+        else
+        {
+            yo->realizarAccion(Accion::NADA);
+            setTiempoBotonMantenido(1.0f);
+        }
     }
     else
     {
-        yo->realizarAccion(Accion::IZQUIERDA);
+        if(r<70)
+        {
+            yo->realizarAccion(Accion::IZQUIERDA); //Se mueve a la izquierda
+            int tm = 3.0f * (std::rand() % 2) * 1.0f;
+            setTiempoBotonMantenido(tm);
+        }
+        else
+        {
+            yo->realizarAccion(Accion::NADA);
+            setTiempoBotonMantenido(1.0f);
+        }
     }
-
 }
