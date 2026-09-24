@@ -120,6 +120,9 @@ class Personaje : public sf::Drawable {
         // Indica que se ha soltado un botón
         void detenerAccion(Accion accion);
 
+        //Indica el valor de la accion que se esta consultando
+        bool isRealizandoAccion(Accion accion);
+
         // Realiza un clon del personaje para que las animaciones no se rayen
         Personaje clonar();
 

@@ -69,6 +69,11 @@ void Personaje::detenerAccion(Accion accion)
     accionesRealizadas[accion] = false;
 }
 
+bool Personaje::isRealizandoAccion(Accion accion)
+{
+    return accionesRealizadas[accion];
+}
+
 int Personaje::getPuntosDeVida()
 {
     return puntosDeVida;

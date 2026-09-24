@@ -72,7 +72,7 @@ void IA::bucleIA()
         setTiempoBotonMantenido(framesRestantes--);
         return;
     }
-
+    setTiempoBotonMantenido(0.0f); //Por si acaso
     //Lo suelta.
     soltarTodo();
     //Actualiza la distancia
@@ -92,10 +92,10 @@ void IA::bucleIA()
     */
     if (std::abs(distancia) <= getRangoAtaque())
     {
-        /*if(enemigo-> == Accion.ARRIBA)
+        if(enemigo->isRealizandoAccion(Accion::ARRIBA)) //Funciona a medias
         {
-            Todo esto es por si el enemigo salta pues la IA salta y le suelta una leche
-        }*/
+            yo->realizarAccion(Accion::ARRIBA);
+        }
         yo->realizarAccion(Accion::ATACAR); //Si estamos en el suelo le pega
     }
     else if (isMirandoDerecha && std::abs(distancia) <= getRangoMedio())
