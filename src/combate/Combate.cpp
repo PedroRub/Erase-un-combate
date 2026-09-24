@@ -11,6 +11,7 @@
 #include <omp.h>
 #include <list>
 #include <ClienteDiscord.hpp>
+#include "IA.hpp"
 
 // Al usar initializer lists o como se diga en españolo me evito que se creen los
 // personajes usando el constructor vacío para nada (porque se queja el g++ más que nada)
@@ -209,7 +210,7 @@ void Combate::recibirEntradaPlayerVSBot()
 {
 
     sf::RenderWindow *ventana = VentanaPrincipal::unicaInstancia();
-
+    IA bot(personajeJugador2,personajeJugador1);
     while (const std::optional evento = ventana->pollEvent())
     {
         if (evento->is<sf::Event::Closed>())
@@ -236,46 +237,8 @@ void Combate::recibirEntradaPlayerVSBot()
 
     if ((dynamic_cast<AnimacionAgrandable *>(cartelTodoListo.get()))->haTerminado())
     {
-        if (std::rand() % 2 == 0)
-        {
-            personajeJugador2.realizarAccion(Accion::ATACAR);
-        }
-        else
-        {
-            personajeJugador2.detenerAccion(Accion::ATACAR);
-        }
-
-        if (std::rand() % 10 == 0)
-        {
-            personajeJugador2.realizarAccion(Accion::ARRIBA);
-        }
-        else
-        {
-            personajeJugador2.detenerAccion(Accion::ARRIBA);
-        }
-
-        if (std::rand() % 8 == 0)
-        {
-            if (personajeJugador2.isMirandoDerecha())
-            {
-                personajeJugador2.realizarAccion(Accion::DERECHA);
-                personajeJugador2.detenerAccion(Accion::IZQUIERDA);
-            }
-            else
-            {
-                personajeJugador2.realizarAccion(Accion::IZQUIERDA);
-                personajeJugador2.detenerAccion(Accion::DERECHA);
-            }
-        }
-
-        if (std::rand() % 8 == 0)
-        {
-            personajeJugador2.realizarAccion(Accion::ABAJO);
-        }
-        else
-        {
-            personajeJugador2.detenerAccion(Accion::ABAJO);
-        }
+        //Aqui deberia haber una pequeña pausa, para que el bot no se te tire como una hiena y no te de tiempo a reaccionar
+        bot.bucleIA();
     }
 }
 
@@ -411,8 +374,10 @@ void Combate::actualizarFotogramaNormal(std::list<std::shared_ptr<Animacion>> &e
         cartelAPelear->actualizar(efectos);
     }
 
-    recibirEntradaPlayerVSPlayerOffline();
-
+    //Cambié esta mamada para testear la IA
+    recibirEntradaPlayerVSBot();
+    //recibirEntradaPlayerVSPlayerOffline();
+    
     // if (conector.has_value())
     //     recibirEntradaPlayerVSPlayerOnline();
     // else

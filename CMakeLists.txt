@@ -161,6 +161,7 @@ src/combate/Hitbox.cpp
 src/combate/InfoCombo.cpp
 src/combate/Personaje.cpp
 src/combate/Temporizador.cpp
+src/combate/IA.cpp
 
 src/discord/ClienteDiscord.cpp
 
